@@ -1,0 +1,16 @@
+env: development # "development, production, local"
+database:
+  user: ${POSTGRES_USER}
+  password: ${POSTGRES_PASSWORD}
+  host: 127.0.0.1
+  port: ${POSTGRES_PORT}
+  name: ${POSTGRES_DB}
+server:
+  port: ${APP_PORT}
+  host: ${APP_HOST}
+  timeout: 4s
+  iddle_timeout: 60s
+redis:
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT}
+migrations_path: ${MIGRATION_PATH}

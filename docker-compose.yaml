@@ -1,0 +1,50 @@
+services:
+  app:
+    image: golang:1.23
+    container_name: app
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "
+        go mod tidy &&
+        go run cmd/blog/main.go --path=conf/conf.yaml
+      "
+    environment:
+      CONFIG_PATH: ${CONFIG_PATH}
+      APP_PORT: ${APP_PORT}
+      APP_HOST: ${APP_HOST}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    network_mode: "host"
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_NAME}
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: redis_cache
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    volumes:
+      - ./redis/data:/data
+
+volumes:
+  db_data:
+  redis_data:
